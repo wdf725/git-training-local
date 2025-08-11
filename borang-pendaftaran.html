@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pendaftaran Inventori</title>
+  <style>
+    :root {
+      --primary: #0b5ed7;
+      --muted: #6c757d;
+      --card-bg: #ffffff;
+      --surface: #f5f7fb;
+      --radius: 8px;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--surface);
+      color: #222;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 28px auto;
+      padding: 22px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 20px rgba(16,24,40,0.06);
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      color: var(--primary);
+      font-size: 20px;
+    }
+    p.lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid #d7dbe6;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .full { grid-column: 1 / -1; }
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+      grid-column: 1 / -1;
+      margin-top: 6px;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid #e6e9f2;
+    }
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .preview {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:6px;
+    }
+    .preview img {
+      width: 96px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #e6e9f2;
+    }
+
+    /* responsive */
+    @media (max-width: 720px) {
+      form { grid-template-columns: 1fr; }
+      .actions { justify-content: stretch; flex-direction: column-reverse; }
+    }
+    .error { color: #b52828; font-size: 13px; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="card">
+      <h1>Pendaftaran Inventori</h1>
+      <p class="lead">Isi maklumat barang untuk direkod. Medan bertanda * wajib diisi.</p>
+
+      <form id="inventoryForm" onsubmit="return handleSubmit(event)" novalidate>
+        <div>
+          <label for="nama">Nama Barang *</label>
+          <input type="text" id="nama" name="nama" required maxlength="150" placeholder="Contoh: Pemotong Rumput Elektrik">
+        </div>
+
+        <div>
+          <label for="sku">SKU (jika ada)</label>
+          <input type="text" id="sku" name="sku" placeholder="Contoh: PR-ELEC-001">
+          <small class="small">Biarkan kosong untuk auto-generate.</small>
+        </div>
+
+        <div>
+          <label for="kategori">Kategori *</label>
+          <select id="kategori" name="kategori" required>
+            <option value="">-- Pilih Kategori --</option>
+            <option>Alat Elektrik</option>
+            <option>Alat Tangan</option>
+            <option>Perabot</option>
+            <option>Bekalan Pejabat</option>
+            <option>Lain-lain</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="lokasi">Lokasi / Stor *</label>
+          <input type="text" id="lokasi" name="lokasi" placeholder="Contoh: Stor Utama / Lantai 2" required>
+        </div>
+
+        <div>
+          <label for="kuantiti">Kuantiti *</label>
+          <input type="number" id="kuantiti" name="kuantiti" min="0" value="1" required>
+        </div>
+
+        <div>
+          <label for="unit">Unit</label>
+          <input type="text" id="unit" name="unit" placeholder="Contoh: unit / kotak / pek">
+        </div>
+
+        <div>
+          <label for="pembekal">Pembekal</label>
+          <input type="text" id="pembekal" name="pembekal" placeholder="Nama pembekal">
+        </div>
+
+        <div>
+          <label for="tarikh_beli">Tarikh Beli</label>
+          <input type="date" id="tarikh_beli" name="tarikh_beli">
+        </div>
+
+        <div>
+          <label for="kos">Kos Seunit (RM)</label>
+          <input type="number" id="kos" name="kos" step="0.01" min="0" placeholder="Contoh: 1500.00">
+        </div>
+
+        <div class="full">
+          <label for="keterangan">Keterangan / Nota</label>
+          <textarea id="keterangan" name="keterangan" placeholder="Maklumat tambahan, kondisi, nombor siri, dsb."></textarea>
+        </div>
+
+        <div>
+          <label for="gambar">Muat Naik Gambar / Dokumen (jpg, png, pdf)</label>
+          <input type="file" id="gambar" name="gambar" accept=".jpg,.jpeg,.png,.pdf">
+          <div class="preview" id="previewArea" style="display:none;">
+            <img id="previewImg" alt="Preview gambar" />
+            <div>
+              <div id="fileName" class="small"></div>
+              <div id="fileType" class="small"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="full actions">
+          <button type="button" class="secondary" onclick="resetForm()">Reset</button>
+          <button type="submit">Daftar Inventori</button>
+        </div>
+
+        <div id="formMessage" class="full"></div>
+      </form>
+
+    </div>
+  </div>
+
+<script>
+  // Auto-generate SKU berdasarkan nama & timestamp (jika kosong)
+  function generateSKU(nama) {
+    const key = (nama || 'ITEM').toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/(^-|-$)/g,'');
+    const ts = Date.now().toString().slice(-5);
+    return key + '-' + ts;
+  }
+
+  const gambar = document.getElementById('gambar');
+  const previewArea = document.getElementById('previewArea');
+  const previewImg = document.getElementById('previewImg');
+  const fileName = document.getElementById('fileName');
+  const fileType = document.getElementById('fileType');
+
+  gambar.addEventListener('change', function () {
+    const f = this.files[0];
+    if (!f) {
+      previewArea.style.display = 'none';
+      return;
+    }
+    fileName.textContent = f.name;
+    fileType.textContent = f.type || '—';
+    // show preview if image
+    if (f.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImg.src = e.target.result;
+        previewArea.style.display = 'flex';
+      };
+      reader.readAsDataURL(f);
+    } else {
+      previewImg.src = '';
+      previewArea.style.display = 'flex';
+    }
+  });
+
+  function resetForm() {
+    document.getElementById('inventoryForm').reset();
+    previewArea.style.display = 'none';
+    document.getElementById('formMessage').innerHTML = '';
+  }
+
+  function showMessage(text, ok = true) {
+    const el = document.getElementById('formMessage');
+    el.innerHTML = '<div style="padding:10px;border-radius:6px;margin-top:10px;background:' + (ok ? '#e6f4ea' : '#fdecea') + ';color:' + (ok ? '#155724' : '#b52828') + ';">' + text + '</div>';
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const nama = document.getElementById('nama').value.trim();
+    const skuEl = document.getElementById('sku');
+    const kuantiti = document.getElementById('kuantiti').value;
+
+    if (!nama) {
+      showMessage('Sila masukkan nama barang.', false);
+      return false;
+    }
+    if (!kuantiti || isNaN(kuantiti) || Number(kuantiti) < 0) {
+      showMessage('Isikan kuantiti yang sah.', false);
+      return false;
+    }
+
+    // auto-generate sku jika kosong
+    if (!skuEl.value.trim()) {
+      skuEl.value = generateSKU(nama);
+    }
+
+    // Di sini: hantar data menggunakan fetch/ajax atau submit form ke server.
+    // Untuk demo HTML sahaja, kita cuma tunjuk mesej kejayaan dan reset form.
+    showMessage('Rekod inventori berjaya didaftar. SKU: ' + skuEl.value);
+    // resetForm(); // uncomment jika mahu reset selepas submit
+    return false;
+  }
+</script>
+
+</body>
+</html>
